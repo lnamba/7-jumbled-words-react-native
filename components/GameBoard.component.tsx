@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text } from 'react-native';
 
 import HintArea from './HintArea.component';
 import SelectableTiles from './SelectableTiles.component';
@@ -32,7 +32,6 @@ function GameBoard() {
       wordsToUse.push(wordList[index]);
       count++;
     } 
-    console.log({wordsToUse})
     setWords(wordsToUse);
   }
 
@@ -93,11 +92,10 @@ function GameBoard() {
   });
 
   const onTileClick = (value, index) => {
-    console.log({value})
     if (selectedTiles.indexOf(index) === -1) {
       setSelectedTiles([...selectedTiles, index]);
 
-      if(usedChunks.indexOf(index) === -1) {
+      if (usedChunks.indexOf(index) === -1) {
         setAnswerChunks([...answerChunks, value]);
       }
     }
@@ -106,25 +104,19 @@ function GameBoard() {
   const handleGuess = () => {
     setAnswerChunks([]);
     words.forEach((word, i) => {
-      console.log({word,answerChunks})
       if (word === answer) {
         const updatedAnswers = [...correctAnswers];
         updatedAnswers[i] = word;
         setCorrectAnswers(updatedAnswers);
-        console.log('HERE',{updatedAnswers})
 
         for(let key in wordObject) {
           if (key === word) {
             const newUsedChunks = [...usedChunks];
             wordChunks.forEach((_chunk, index) => {
-              if (selectedTiles.indexOf(index) > -1) {
-              console.log({newUsedChunks,index})
-              if (newUsedChunks.indexOf(index) === -1) {
-                  newUsedChunks.push(index);
-                }
+              if (selectedTiles.indexOf(index) > -1 && newUsedChunks.indexOf(index) === -1) {
+                newUsedChunks.push(index);
               }
             });
-            console.log({usedChunks, newUsedChunks})
             setUsedChunks(newUsedChunks);
           }
         }
@@ -156,32 +148,48 @@ function GameBoard() {
     const updatedAnswer = [...answerChunks];
     tiles.pop();
     updatedAnswer.pop()
-    console.log({tiles})
     setSelectedTiles(tiles);
     setAnswerChunks(updatedAnswer);
   }
 
   return (
-    <View>
-    <Text style={{ marginTop: 20, textAlign: 'center', marginBottom: 8 }}>7 Jumbled Words</Text>
-      <HintArea 
-        definitions={definitions} 
-        correctAnswers={correctAnswers}
-        wordLengths={wordLengths} 
-      />
-      <ActionBar 
-        answer={answer} 
-        handleBackspace={handleBackspace}
-        handleGuess={handleGuess} 
-        shuffle={shuffle} 
-      />
-      <SelectableTiles 
-        onTileClick={onTileClick}
-        usedChunks={usedChunks}
-        wordChunks={wordChunks} 
+    <SafeAreaView>
+    {wordChunks.length && definitions.length ? (
+      <>
+        <Text style={styles.header}>7 Jumbled Words</Text>
+        <HintArea 
+          definitions={definitions} 
+          correctAnswers={correctAnswers}
+          wordLengths={wordLengths} 
         />
-    </View>
+        <ActionBar 
+          answer={answer} 
+          handleBackspace={handleBackspace}
+          handleGuess={handleGuess} 
+          shuffle={shuffle} 
+        />
+        <SelectableTiles 
+          onTileClick={onTileClick}
+          usedChunks={usedChunks}
+          wordChunks={wordChunks} 
+        />
+      </>
+    ) : <ActivityIndicator />}
+    <Text style={styles.footerText}>Lauren Namba 2022</Text>
+    </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  header: {
+    marginTop: 14, 
+    fontWeight: 'bold', 
+    textAlign: 'center', 
+    marginBottom: 8,
+  },
+  footerText: {
+    textAlign: 'center',
+  }
+});
 
 export default GameBoard;

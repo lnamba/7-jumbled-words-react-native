@@ -17,22 +17,22 @@ function UserActions(props: Props) {
       <View style={styles.flex}>
         <Pressable onPress={shuffle}>
           <View style={styles.button}>
-            <Text style={{textAlign: 'center', color: '#FFF'}}>Shuffle</Text>
+            <Text style={styles.text}>Shuffle</Text>
           </View>
         </Pressable>
       </View>
       <View style={styles.flex}>
-        <Text style={{ fontSize: 20 }}>{answer}</Text>
+        <Text style={styles.answerText}>{answer}</Text>
       </View>
       <View style={styles.rightButtons}>
         <Pressable onPress={handleBackspace}>
           <View style={{...styles.button, ...{marginRight: 4}}}>
-            <Text style={{textAlign: 'center', color: '#FFF'}}>Back</Text>
+            <Text style={styles.text}>Back</Text>
           </View>
         </Pressable>
         <Pressable onPress={handleGuess}>
           <View style={styles.button}>
-            <Text style={{textAlign: 'center', color: '#FFF'}}>Guess</Text>
+            <Text style={styles.text}>Guess</Text>
           </View>
         </Pressable>
       </View>
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   rightButtons: {
     flex: 1, 
     flexDirection: 'row',
+    justifyContent: 'flex-end'
   },
   flex: {
     flex:1
@@ -62,6 +63,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'black',
     maxWidth: 80,
+  },
+  text: {
+    textAlign: 'center', 
+    color: '#FFF',
+  },
+  answerText: {
+    fontSize: 20
   }
 })
 

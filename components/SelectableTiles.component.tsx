@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface WordChunk {
   chunk: string;
@@ -15,19 +15,32 @@ interface Props {
 function SelectableTiles(props: Props) {
   const { onTileClick, usedChunks, wordChunks } = props;
 
-  const renderWordChunk = ({ chunk, index }) => {
+  const renderWordChunk = ({ item }) => {
+    const { chunk, index } = item;
     const correct = usedChunks.includes(index);
 
     return (
-      <Pressable style={{...styles.tile, ...correct ? styles.correct : {}}} key={index} onPress={() => onTileClick(chunk, index)}>
-        <Text style={{fontSize: 18}}>{chunk}</Text>
+      <Pressable 
+        onPress={() => onTileClick(chunk, index)}
+        style={{ flex: 1/5 }}
+      >
+        <View
+          style={{...styles.tile, ...correct ? styles.correct : {}}} 
+        >
+        <Text style={styles.tileText}>{chunk}</Text>
+        </View>
       </Pressable>
     )
   }
 
   return (
     <View style={styles.container}>
-      {wordChunks.map(renderWordChunk)}
+      <FlatList 
+        renderItem={renderWordChunk}
+        numColumns={5}
+        data={wordChunks}
+        keyExtractor={(item) => item.index}
+      />
     </View>
   )
 }
@@ -35,24 +48,23 @@ function SelectableTiles(props: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     marginHorizontal: 16,
   },
   tile: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
     borderColor: '#000',
-    minWidth: 70,
     height: 50,
-    marginBottom: 6,
-    marginRight: 6,
+    marginBottom: 4,
+    marginHorizontal: 1,
     borderRadius: 10
   },
   correct: {
     backgroundColor: 'darkgrey'
+  },
+  tileText: {
+    fontSize: 18,
   }
 })
 

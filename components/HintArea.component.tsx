@@ -11,14 +11,27 @@ function HintArea(props: Props) {
   const { correctAnswers, definitions, wordLengths } = props;
 
   const renderHintRow = (definition: string, i: number) => {
-    console.log({correctAnswers})
+    const isFirst = i === 0;
+    const isLast = i === wordLengths.length - 1;
+    const correct = !!correctAnswers[i];
+
     return (
-      <View style={styles.hintRow} key={i}>
-        <View style={{flexGrow:1, flexDirection:'column'}} key={i}>
-          <Text style={{fontSize:12}}>{`${definition} (${wordLengths[i]})`}</Text>
-        </View>
-        <View style={{flex:1, borderLeftColor: '#000'}} key={i}>
-          <Text style={{fontSize:12}}>{`${correctAnswers[i].toUpperCase()}`}</Text>
+      <View 
+        style={{
+          ...styles.hintRow, 
+          ...isFirst ? { borderTopRightRadius: 10, borderTopLeftRadius: 10, borderTopWidth: 4 } : {}, 
+          ...isLast ? { borderBottomRightRadius: 10, borderBottomLeftRadius: 10, borderBottomWidth: 4 } : {},
+          ...correct ? styles.correct : {},
+        }}
+        key={i}>
+        <View>
+          <Text style={styles.text}>{`${definition} (${wordLengths[i]})`}</Text>
+          <Text style={{
+            ...styles.text,
+            fontWeight: 'bold'
+          }}>
+            {`${correctAnswers[i].toUpperCase()}`}
+          </Text>
         </View>
       </View>
     )
@@ -33,29 +46,24 @@ function HintArea(props: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     marginHorizontal: 16,
 },
   hintRow: {
-    flex: 1,
     flexDirection: 'row',
     borderColor: '#000',
     borderTopWidth: 2,
     borderBottomWidth: 2,
     borderLeftWidth: 4,
     borderRightWidth: 4,
-    borderRadius: 10
+    padding: 4,
   },
-  // definition: {
-  //   flexDirection: 'row',
-  //   backgroundColor: 'red',
-  //   padding: 0,
-  // },
-  // correctAnswer: {
-  //   flex: 1,
-  //   backgroundColor: 'blue'
-  // }
+  correct: {
+    backgroundColor: 'darkgrey'
+  },
+  text: {
+    fontSize: 12,
+  }
 });
 
 export default HintArea;

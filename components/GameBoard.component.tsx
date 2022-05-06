@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text } from 'react-native';
+import { Alert, ActivityIndicator, SafeAreaView, StyleSheet, Text } from 'react-native';
 
 import HintArea from './HintArea.component';
 import SelectableTiles from './SelectableTiles.component';
@@ -16,6 +16,7 @@ function GameBoard() {
   const [correctAnswers, setCorrectAnswers] = useState(['','','','','','','']);
   const [usedChunks, setUsedChunks] = useState([]);
   const [wordObject, setWordObject] = useState({});
+  const [isGameOver, setIsGameOver] = useState(false);
   const answer = answerChunks.join('');
 
   useEffect(() => {
@@ -58,6 +59,17 @@ function GameBoard() {
     }
   }, [words]);
 
+  useEffect(() => {
+    const isComplete = correctAnswers.every((val) => val);
+    setIsGameOver(isComplete);
+  }, [correctAnswers]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      Alert.alert('Nice.', 'Play again?', [{ text: 'OK', onPress: () => resetGame() }])
+    }
+  }, [isGameOver])
+
   const shuffleWordChunks = (arr) => {
     let index = arr.length;
     let value;
@@ -80,13 +92,11 @@ function GameBoard() {
 
   const getDefinitions = useCallback(async () => {
     return Promise.all(words.map(async (word) => {
-      console.log({word})
       const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
       // const url = `http://api.wordnik.com:80/v4/word.json/${word}/definitions?limit=5&includeRelated=true&sourceDictionaries=all&useCanonical=true&includeTags=false&api_key=da315e3cd6b9d073f722503e4d2015774237e56c91d0acc29`;
       const response = await fetch(url);
       const json = await response.json();
       const definition = json?.[0]?.meanings?.[0]?.definitions?.[0]?.definition;
-      console.log({definition})
       return definition;
     }));
   });
@@ -150,6 +160,20 @@ function GameBoard() {
     updatedAnswer.pop()
     setSelectedTiles(tiles);
     setAnswerChunks(updatedAnswer);
+  }
+
+  const resetGame = () => {
+    setWords([]);
+    setDefinitions([]);
+    setWordChunks([]);
+    setWordLengths([]);
+    setSelectedTiles([]);
+    setAnswerChunks([]);
+    setCorrectAnswers(['','','','','','','']);
+    setUsedChunks([]);
+    setWordObject({});
+    setIsGameOver(false);
+    initializeGame();
   }
 
   return (

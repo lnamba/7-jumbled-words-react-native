@@ -10,12 +10,15 @@ interface Props {
 
 function UserActions(props: Props) {
   const { answer, handleBackspace, handleGuess, shuffle } = props;
-  console.log({answer})
+
+  const pressableStyle = ({ pressed }) => ({
+    opacity: pressed ? .5 : 1,
+  })
 
   return (
     <View style={styles.container}>
       <View style={styles.flex}>
-        <Pressable onPress={shuffle}>
+        <Pressable onPress={shuffle} style={pressableStyle}>
           <View style={styles.button}>
             <Text style={styles.text}>Shuffle</Text>
           </View>
@@ -25,12 +28,12 @@ function UserActions(props: Props) {
         <Text style={styles.answerText}>{answer}</Text>
       </View>
       <View style={styles.rightButtons}>
-        <Pressable onPress={handleBackspace}>
+        <Pressable onPress={handleBackspace} style={pressableStyle}>
           <View style={{...styles.button, ...{marginRight: 4}}}>
             <Text style={styles.text}>Back</Text>
           </View>
         </Pressable>
-        <Pressable onPress={handleGuess}>
+        <Pressable onPress={handleGuess} style={pressableStyle}>
           <View style={styles.button}>
             <Text style={styles.text}>Guess</Text>
           </View>

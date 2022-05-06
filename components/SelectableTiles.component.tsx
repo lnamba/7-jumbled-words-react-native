@@ -20,15 +20,17 @@ function SelectableTiles(props: Props) {
     const correct = usedChunks.includes(index);
 
     return (
-      <Pressable 
-        onPress={() => onTileClick(chunk, index)}
-        style={{ flex: 1/5 }}
-      >
-        <View
-          style={{...styles.tile, ...correct ? styles.correct : {}}} 
-        >
-        <Text style={styles.tileText}>{chunk}</Text>
-        </View>
+      <Pressable style={styles.pressable} onPress={() => onTileClick(chunk, index)}>
+        {({ pressed }) => (
+          <View
+            style={[
+              styles.tile,
+              { backgroundColor: pressed ? '#DDD' : '#FFF' },
+              correct ? styles.correct : {},
+          ]}>
+            <Text style={styles.tileText}>{chunk}</Text>
+          </View>
+        )}
       </Pressable>
     )
   }
@@ -40,7 +42,8 @@ function SelectableTiles(props: Props) {
         numColumns={5}
         data={wordChunks}
         keyExtractor={(item) => item.index}
-      />
+        columnWrapperStyle={{ justifyContent: 'center'}}
+        />
     </View>
   )
 }
@@ -49,6 +52,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 16,
+  },
+  pressable: {
+    flex: 1 / 5,
   },
   tile: {
     justifyContent: 'center',
